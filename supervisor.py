@@ -93,3 +93,18 @@ workflow.add_node("suggestion_generator", suggestion_node)
 workflow.add_node("synthesis", synthesis_node)
 workflow.add_node("supervisor", supervisor_agent)
 
+for member in members:
+    # 我们希望我们的工作者在完成时始终“报告给”主管
+    workflow.add_edge(member, "supervisor")
+
+
+# 主管填充图状态中的“next”字段
+# 这将路由到一个节点或完成
+conditional_map = {k: k for k in members}
+conditional_map["FINISH"] = END
+workflow.add_conditional_edges("supervisor", lambda x: x["next"], conditional_map)
+
+
+# 最后，添加入口点
+workflow.add_edge(START, "supervisor")
+graph = workflow.compile()
