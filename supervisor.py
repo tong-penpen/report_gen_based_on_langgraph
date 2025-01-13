@@ -66,17 +66,31 @@ class AgentState(TypedDict):
     next: str
 
 
-trend_agent = create_react_agent(llm, tools=)
-trend_node = functools.partial(agent_node, agent=trend_agent, name="")
-
-
 # 注意：这执行任意代码执行。请谨慎操作
 chart_agent = create_react_agent(llm, tools=[python_repl_tool])
-chart_node = functools.partial(agent_node, agent=code_agent, name="Coder")
+chart_node = functools.partial(agent_node, agent=chart_agent, name="chart_generator")
 
+# 趋势分析
+trend_agent = create_react_agent(llm, tools=[python_repl_tool])
+trend_node = functools.partial(agent_node, agent=trend_agent, name="trend_analysis")
+
+# 原因分析
+reason_agent = create_react_agent(llm, tools=[python_repl_tool])
+reason_node = functools.partial(agent_node, agent=reason_agent, name="reason_analysis")
+
+# 建议
+suggestion_agent = create_react_agent(llm, tools=[python_repl_tool])
+suggestion_node = functools.partial(agent_node, agent=suggestion_agent, name="suggestion_generator")
+
+# 格式化
+synthesis_agent = create_react_agent(llm, tools=[python_repl_tool])
+synthesis_node = functools.partial(agent_node, agent=synthesis_agent, name="synthesis_generator")
 
 workflow = StateGraph(AgentState)
 workflow.add_node("chart_generator", chart_node)
 workflow.add_node("trend_analysis", trend_node)
+workflow.add_node("reason_analysis", reason_node)
+workflow.add_node("suggestion_generator", suggestion_node)
+workflow.add_node("synthesis", synthesis_node)
 workflow.add_node("supervisor", supervisor_agent)
 
