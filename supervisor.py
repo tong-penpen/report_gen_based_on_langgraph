@@ -60,11 +60,6 @@ class AgentState(TypedDict):
     # 'next' 字段指示下一个路由位置
     next: str
 
-
-trend_agent = create_react_agent(llm, tools=)
-trend_node = functools.partial(agent_node, agent=trend_agent, name="trend_analysis")
-
-
 # 注意：这执行任意代码执行。请谨慎操作
 chart_agent = create_react_agent(llm, tools=[python_repl_tool])
 chart_node = functools.partial(agent_node, agent=chart_agent, name="chart_generator")
