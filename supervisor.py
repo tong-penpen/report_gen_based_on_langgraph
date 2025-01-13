@@ -15,7 +15,6 @@ from langgraph.prebuilt import create_react_agent
 
 python_repl_tool = PythonREPLTool()
 
-
 def agent_node(state, agent, name):
     result = agent.invoke(state)
     return {
@@ -32,7 +31,6 @@ system_prompt = (
 # 并在工作完成时做出决定
 options = ["FINISH"] + members
 
-
 class routeResponse(BaseModel):
     next: Literal[*options]
 
@@ -48,14 +46,11 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 ).partial(options=str(options), members=", ".join(members))
 
-
 llm = ChatOpenAI(model="gpt-4o")
 
 def supervisor_agent(state):
     supervisor_chain = prompt | llm.with_structured_output(routeResponse)
     return supervisor_chain.invoke(state)
-
-
 
 # 智能体状态是图中每个节点的输入
 class AgentState(TypedDict):
@@ -67,12 +62,12 @@ class AgentState(TypedDict):
 
 
 trend_agent = create_react_agent(llm, tools=)
-trend_node = functools.partial(agent_node, agent=trend_agent, name="")
+trend_node = functools.partial(agent_node, agent=trend_agent, name="trend_analysis")
 
 
 # 注意：这执行任意代码执行。请谨慎操作
 chart_agent = create_react_agent(llm, tools=[python_repl_tool])
-chart_node = functools.partial(agent_node, agent=code_agent, name="Coder")
+chart_node = functools.partial(agent_node, agent=chart_agent, name="chart_generator")
 
 
 workflow = StateGraph(AgentState)
