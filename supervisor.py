@@ -61,23 +61,28 @@ class AgentState(TypedDict):
     next: str
 
 # 注意：这执行任意代码执行。请谨慎操作
-chart_agent = create_react_agent(llm, tools=[python_repl_tool])
+chart_prompt = "你是一个绘图者，按要求编写python代码并使用工具执行画图。"
+chart_agent = create_react_agent(llm,state_modifier = chart_prompt, tools=[python_repl_tool])
 chart_node = functools.partial(agent_node, agent=chart_agent, name="chart_generator")
 
 # 趋势分析
-trend_agent = create_react_agent(llm, tools=[python_repl_tool])
+trend_prompt = ""
+trend_agent = create_react_agent(llm, state_modifier = trend_prompt,tools=[python_repl_tool])
 trend_node = functools.partial(agent_node, agent=trend_agent, name="trend_analysis")
 
 # 原因分析
-reason_agent = create_react_agent(llm, tools=[python_repl_tool])
+reson_prompt = ""
+reason_agent = create_react_agent(llm,state_modifier = reason_prompt, tools=[python_repl_tool])
 reason_node = functools.partial(agent_node, agent=reason_agent, name="reason_analysis")
 
 # 建议
-suggestion_agent = create_react_agent(llm, tools=[python_repl_tool])
+suggestion_prompt = ""
+suggestion_agent = create_react_agent(llm, state_modifier = suggestion_prompt, tools=[python_repl_tool])
 suggestion_node = functools.partial(agent_node, agent=suggestion_agent, name="suggestion_generator")
 
 # 格式化
-synthesis_agent = create_react_agent(llm, tools=[python_repl_tool])
+synthesis_prompt = ""
+synthesis_agent = create_react_agent(llm,state_modifier = synthesis_prompt, tools=[python_repl_tool])
 synthesis_node = functools.partial(agent_node, agent=synthesis_agent, name="synthesis_generator")
 
 workflow = StateGraph(AgentState)
